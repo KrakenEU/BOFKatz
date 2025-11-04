@@ -69,7 +69,7 @@ make
 
 ## Integration
 
-BOFKatz is has been only tested with HavocC2 for the moment
+BOFKatz has been only tested with HavocC2 for the moment
 
 
 ## Credits
